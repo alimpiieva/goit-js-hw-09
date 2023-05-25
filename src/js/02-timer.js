@@ -13,40 +13,45 @@ const options = {
     if (selectedDate < new Date()) {
       Notiflix.Notify.warning("Please choose a date in the future");
     } else {
-      startButton.disabled = false;
+      onChooseDate.disabled = false;
     }
   },
 };
 
 const datePicker = flatpickr("#datetime-picker", options);
 
-const startButton = document.querySelector('[data-start]');
+const onChooseDate = document.querySelector('[data-start]');
 const stopButton = document.querySelector('[data-stop]');
 
 let selectedDate;
+let countdownInterval;
 
-startButton.addEventListener('click', () => {
+function updateCountdown() {
+  const currentDate = new Date();
+  const timeRemaining = selectedDate - currentDate;
+
+  if (timeRemaining <= 0 || timeRemaining === 0) {
+    clearInterval(countdownInterval);
+    daysElement.textContent = '00';
+    hoursElement.textContent = '00';
+    minutesElement.textContent = '00';
+    secondsElement.textContent = '00';
+    return;
+  }
+
+  const { days, hours, minutes, seconds } = convertMs(timeRemaining);
+  updateTimer(days, hours, minutes, seconds);
+}
+
+onChooseDate.addEventListener('click', () => {
   selectedDate = datePicker.selectedDates[0];
+
+  
   const countdownInterval = setInterval(updateCountdown, 1000);
 
-  updateCountdown();
+  
 
-  function updateCountdown() {
-    const currentDate = new Date();
-    const timeRemaining = selectedDate - currentDate;
-
-    if (timeRemaining <= 0) {
-      clearInterval(countdownInterval);
-      daysElement.textContent = '00';
-      hoursElement.textContent = '00';
-      minutesElement.textContent = '00';
-      secondsElement.textContent = '00';
-      return;
-    }
-
-    const { days, hours, minutes, seconds } = convertMs(timeRemaining);
-    updateTimer(days, hours, minutes, seconds);
-  }
+  updateCountdown(); 
 });
 
 function addLeadingZero(value) {
