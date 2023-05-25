@@ -14,7 +14,7 @@ form.addEventListener('submit', function(event) {
   const amount = Number(amountInput.value);
 
   if (delay < 0 || step < 0 || amount <= 0) {
-    Notiflix.Notify.warning('Усі значення мають бути більше ніж 0');
+    Notiflix.Notify.warning('All values must be greater than 0');
     return;
   }
 
